@@ -87,3 +87,39 @@ header {
   color: #fff;
   border: 2px solid #0b0b0c;
 }
+
+/* Notas */
+#notes-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 250px);
+  padding: 2rem;
+  gap: 2rem;
+}
+
+.note {
+  min-height: 200px;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  background-color: #202124;
+  border-radius: 10px;
+  color: #fff;
+  position: relative;
+}
+
+.note textarea {
+  background-color: transparent;
+
+  /* Desabilita a opção do usuário de modificar as dimensões da textarea */
+  resize: none;
+
+  color: #fff;
+  border: none;
+  height: 100%;
+
+  /* Desabilita a marcação quando der o focus no input */
+  outline: none;
+}
+
+.note .bi-pin {
+  /* Continua */
+}
