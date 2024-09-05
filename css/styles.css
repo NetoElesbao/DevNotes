@@ -121,5 +121,41 @@ header {
 }
 
 .note .bi-pin {
-  /* Continua */
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  font-size: 1.2rem;
+  background-color: #333;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.note:hover > i {
+  opacity: 1;
+}
+
+.note .bi-x-lg,
+.note .bi-file-earmark-plus {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 0.9rem;
+  padding: 5px;
+  transition: 0.3s;
+  color: #555;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.note .bi-x-lg:hover,
+.note .bi-file-earmark-plus:hover {
+    color: #fff;
+}
+.note .bi-file-earmark-plus {
+  top: 40px;
+}
+
+.fixed {
+    background-color: #3c3c3f;
 }
