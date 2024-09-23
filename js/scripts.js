@@ -71,6 +71,13 @@ function createNote(id, content, fixed = false) {
   copyBtn.classList.add(...["bi"], ["bi-file-earmark-plus"]);
   div.appendChild(copyBtn);
 
+  // Evento pra atualizar content (sim, uma forma bem duvidosa pra atualizar uma nota, mas pra esse contexto é mais prático)
+  div.querySelector("textarea").addEventListener("keyup", (event) => {
+    const content = event.target.value;
+
+    updateNote(id, content);
+  });
+
   //   Evento de troca do atributo fixed da nota
   div.querySelector(".bi-pin").addEventListener("click", () => {
     toggleFixNote(id);
@@ -88,6 +95,17 @@ function createNote(id, content, fixed = false) {
   });
 
   return div;
+}
+
+// Atualiza content de nota
+function updateNote(id, newContent) {
+  const notes = getNotesInLocalStorage();
+
+  const noteTarget = notes.filter((note) => note.id === id)[0];
+
+  noteTarget.content = newContent;
+
+  saveNotesInLocalStorage(notes);
 }
 
 // Troca o atributo fixed
