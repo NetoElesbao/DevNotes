@@ -9,7 +9,7 @@ const addNoteBtn = document.querySelector(".add-note");
 
 // Adiciona nota
 function addNote() {
-  const notes = getNotes();
+  const notes = getNotesInLocalStorage();
 
   const noteObject = {
     id: generateId(),
@@ -20,7 +20,7 @@ function addNote() {
   // Cria a nota
   const noteElement = createNote(noteObject.id, noteObject.content);
 
-  //Adiciona a nota para ser exibida
+  // Adiciona a nota para ser exibida
   notesContainer.appendChild(noteElement);
 
   notes.push(noteObject);
@@ -50,7 +50,6 @@ function createNote(id, content, fixed = false) {
   //           <i class="bi bi-file-earmark-plus"></i>`;
 
   // Forma 2
-
   if (fixed) {
     div.classList.add("fixed");
   }
@@ -77,11 +76,23 @@ function createNote(id, content, fixed = false) {
     toggleFixNote(id);
   });
 
+  // Evento de deletar nota
+  div.querySelector(".bi-x-lg").addEventListener("click", () => {
+    deleteNote(id, div);
+  });
+
+  // Evento de duplicar nota
+  div.querySelector(".bi-file-earmark-plus").addEventListener("click", () => {
+    // debugger;
+    duplicateNote(id);
+  });
+
   return div;
 }
 
+// Troca o atributo fixed
 function toggleFixNote(id) {
-  const notes = getNotes();
+  const notes = getNotesInLocalStorage();
   //   debugger;
   const noteTarget = notes.filter((note) => note.id === id)[0];
 
@@ -92,6 +103,45 @@ function toggleFixNote(id) {
   loadNotes();
 }
 
+// Deleta nota
+function deleteNote(id, element) {
+  // Aqui o método filter retém a nota a ser excluída, impendindo-a de adentrar ao array.
+  const notes = getNotesInLocalStorage().filter((note) => note.id !== id);
+
+  // Aqui o array já filtrado é acrescentado ao localStorage.
+  saveNotesInLocalStorage(notes);
+
+  // Aqui o elemento nota em questão é removido da tela.
+  notesContainer.removeChild(element);
+}
+
+// Duplica nota
+function duplicateNote(id) {
+  const notesLS = getNotesInLocalStorage();
+
+  const noteTarget = getNotesInLocalStorage().filter(
+    (note) => note.id === id
+  )[0];
+
+  const noteDuplicated = {
+    id: generateId(),
+    content: noteTarget.content,
+    fixed: noteTarget.fixed,
+  };
+
+  const noteElement = createNote(
+    noteDuplicated.id,
+    noteDuplicated.content,
+    noteDuplicated.fixed
+  );
+
+  notesContainer.appendChild(noteElement);
+
+  notesLS.push(noteDuplicated);
+
+  saveNotesInLocalStorage(notesLS);
+}
+
 // Salva a nota no localStorage
 function saveNotesInLocalStorage(notes) {
   localStorage.setItem("notes", JSON.stringify(notes));
@@ -100,7 +150,7 @@ function saveNotesInLocalStorage(notes) {
 // localStorage--------------
 
 // Carrega as notas dp localStorage caso existam, caso não, cria um array vazio.
-function getNotes() {
+function getNotesInLocalStorage() {
   const notes = JSON.parse(localStorage.getItem("notes") || "[]");
 
   const orderedNotes = notes.sort((a, b) => (b.fixed > a.fixed ? 10 : -10));
@@ -111,7 +161,7 @@ function getNotes() {
 function loadNotes() {
   cleanNotes();
 
-  getNotes().forEach((note) => {
+  getNotesInLocalStorage().forEach((note) => {
     console.log("Entrou");
 
     const noteElement = createNote(note.id, note.content, note.fixed);
@@ -128,7 +178,6 @@ function cleanNotes() {
 
 // Adiciona nota
 addNoteBtn.addEventListener("click", () => {
-  //   debugger;
   addNote();
 });
 
