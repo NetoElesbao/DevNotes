@@ -184,8 +184,6 @@ function loadNotes() {
   cleanNotes();
 
   getNotesInLocalStorage().forEach((note) => {
-    // console.log("Entrou");
-
     const noteElement = createNote(note.id, note.content, note.fixed);
 
     notesContainer.appendChild(noteElement);
@@ -220,6 +218,10 @@ function searchNotes(search) {
 
     return;
   }
+
+  cleanNotes();
+
+  loadNotes();
 }
 
 // Exporta csv (método)
@@ -234,8 +236,6 @@ function exportData() {
   ]
     .map((element) => element.join(","))
     .join("\n");
-
-  // console.log(csvString);
 
   // Cria uma ancora
   const a_element = document.createElement("a");
@@ -267,8 +267,6 @@ noteContent.addEventListener("keydown", (event) => {
 
 // Pesquisa a nota
 searchInput.addEventListener("keyup", (event) => {
-  // debugger;
-
   const search = event.target.value;
 
   searchNotes(search);
