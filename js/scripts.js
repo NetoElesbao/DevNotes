@@ -5,6 +5,10 @@ const noteContent = document.querySelector("#note-content");
 
 const addNoteBtn = document.querySelector(".add-note");
 
+const searchInput = document.querySelector("#search-input");
+
+const exportNotesBtn = document.querySelector("#export-notes");
+
 // Funções--------------------------------------------------------------------------------------------------------------------
 
 // Adiciona nota
@@ -180,7 +184,7 @@ function loadNotes() {
   cleanNotes();
 
   getNotesInLocalStorage().forEach((note) => {
-    console.log("Entrou");
+    // console.log("Entrou");
 
     const noteElement = createNote(note.id, note.content, note.fixed);
 
@@ -188,15 +192,91 @@ function loadNotes() {
   });
 }
 
+// Limpa as notas da tela do usuário
 function cleanNotes() {
   notesContainer.replaceChildren([]);
 }
+
+// Faz a pesquisa das notas no localStorage
+function searchNotes(search) {
+  const searchNormalized = search.toLowerCase();
+
+  const searchResults = getNotesInLocalStorage().filter((note) => {
+    // debugger;
+    const noteNormalized = note.content.toLowerCase();
+
+    return noteNormalized.includes(searchNormalized);
+  });
+
+  console.log(searchNormalized);
+
+  if (searchNormalized !== "") {
+    cleanNotes();
+
+    searchResults.forEach((note) => {
+      const noteElement = createNote(note.id, note.content);
+      notesContainer.appendChild(noteElement);
+    });
+
+    return;
+  }
+}
+
+// Exporta csv (método)
+function exportData() {
+  // Puxa as notas do localStorage
+  const notes = getNotesInLocalStorage();
+
+  // Cria um array com dois arrays internos
+  const csvString = [
+    ["ID", "Conteúdo", "Fixado?"],
+    ...notes.map((note) => [note.id, note.content, note.fixed]),
+  ]
+    .map((element) => element.join(","))
+    .join("\n");
+
+  // console.log(csvString);
+
+  // Cria uma ancora
+  const a_element = document.createElement("a");
+  a_element.href = "data:text/csv;charset=utf-8," + encodeURI(csvString);
+
+  a_element.target = "_blank";
+
+  a_element.download = "notes.csv";
+
+  a_element.click();
+}
+
+cleanNotes();
+
+loadNotes();
 
 // Eventos--------------------------------------------------------------------------------------------------------------------
 
 // Adiciona nota
 addNoteBtn.addEventListener("click", () => {
   addNote();
+});
+
+noteContent.addEventListener("keydown", (event) => {
+  if (event.key == "Enter") {
+    addNote();
+  }
+});
+
+// Pesquisa a nota
+searchInput.addEventListener("keyup", (event) => {
+  // debugger;
+
+  const search = event.target.value;
+
+  searchNotes(search);
+});
+
+// Exporta CSV
+exportNotesBtn.addEventListener("click", () => {
+  exportData();
 });
 
 // Inicialização
